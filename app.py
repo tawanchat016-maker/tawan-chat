@@ -8,8 +8,10 @@ app = Flask(__name__)
 app.secret_key = "tawan-secret-key-2024"
 
 def load_config():
-    with open("config.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    return {
+        "PIN": os.environ.get("PIN", "1234"),
+        "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", "")
+    }
 
 def load_history():
     try:
@@ -22,8 +24,11 @@ def load_history():
         return []
 
 def save_history(history):
-    with open("chat_history.json", "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False, indent=2)
+    try:
+        with open("chat_history.json", "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+    except:
+        pass
 
 def load_pinned():
     try:
@@ -36,8 +41,11 @@ def load_pinned():
         return []
 
 def save_pinned(pinned):
-    with open("pinned_memory.json", "w", encoding="utf-8") as f:
-        json.dump(pinned, f, ensure_ascii=False, indent=2)
+    try:
+        with open("pinned_memory.json", "w", encoding="utf-8") as f:
+            json.dump(pinned, f, ensure_ascii=False, indent=2)
+    except:
+        pass
 
 def get_recent_history():
     history = load_history()
@@ -132,7 +140,7 @@ def chat():
     full_prompt = SYSTEM_PROMPT + pinned_text + history_text + f"\n\nเรา: {user_message}\nตะวัน:"
 
     response = client.models.generate_content(
-       model="gemini-2.0-flash-lite",
+        model="gemini-2.0-flash-lite",
         contents=full_prompt
     )
     reply = response.text.strip()
