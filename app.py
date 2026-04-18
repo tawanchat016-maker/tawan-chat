@@ -140,8 +140,8 @@ def chat():
     full_prompt = SYSTEM_PROMPT + pinned_text + history_text + f"\n\nเรา: {user_message}\nตะวัน:"
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        
+        model="gemini-2.5-flash-lite",
+
         contents=full_prompt
     )
     reply = response.text.strip()
